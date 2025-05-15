@@ -1,30 +1,28 @@
 from django.db import models
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
 
 class BaseModel(models.Model):
-    is_published = models.BooleanField('Опубликовано', default=True, help_text='Снимите галочку, чтобы скрыть публикацию.')
+    is_published = models.BooleanField(
+        'Опубликовано',
+        default=True,
+        help_text='Снимите галочку, чтобы скрыть публикацию.'
+        )
     created_at = models.DateTimeField('Добавлено', auto_now_add=True)
+    
     class Meta:
-        abstract = True 
+        abstract = True
 
 
 class Location(BaseModel):
     name = models.CharField('Название места', max_length=256)
     
     class Meta:
-        # constraints = (
-        #     models.UniqueConstraint(
-        #         fields=('first_name', 'last_name', 'birthday'),
-        #         name='Unique person constraint',
-        #     ),
-        # )
-        
         verbose_name = 'местоположение'
-        verbose_name_plural = 'Местоположения' 
+        verbose_name_plural = 'Местоположения'
 
 
 class Category(BaseModel):
@@ -33,21 +31,13 @@ class Category(BaseModel):
     slug = models.SlugField(
         'Идентификатор',
         unique=True,
-        help_text='Идентификатор страницы для URL;' +
-        ' разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        help_text='Идентификатор страницы для URL;'
+        + ' разрешены символы латиницы, цифры, дефис и подчёркивание.'
         )
     
     class Meta:
-        # constraints = (
-        #     models.UniqueConstraint(
-        #         fields=('first_name', 'last_name', 'birthday'),
-        #         name='Unique person constraint',
-        #     ),
-        # )
-        
         verbose_name = 'категория'
-        verbose_name_plural = 'Категории' 
-
+        verbose_name_plural = 'Категории'
 
 
 class Post(BaseModel):
@@ -55,24 +45,28 @@ class Post(BaseModel):
     text = models.TextField('Текст')
     pub_date = models.DateTimeField(
         'Дата и время публикации',
-        help_text='Если установить дату и время в будущем' +
-        ' — можно делать отложенные публикации.'
+        help_text='Если установить дату и время в будущем'
+        + ' — можно делать отложенные публикации.'
         )
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор публикации')
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Местоположение')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name='Категория')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор публикации'
+        )
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Местоположение'
+        )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Категория'
+        )
 
     class Meta:
-        # constraints = (
-        #     models.UniqueConstraint(
-        #         fields=('first_name', 'last_name', 'birthday'),
-        #         name='Unique person constraint',
-        #     ),
-        # )
-        
         verbose_name = 'публикация'
-        verbose_name_plural = 'Публикации' 
-    
-    # def get_absolute_url(self):
-    #     # С помощью функции reverse() возвращаем URL объекта.
-    #     return reverse('birthday:detail', kwargs={'pk': self.pk})
+        verbose_name_plural = 'Публикации'
